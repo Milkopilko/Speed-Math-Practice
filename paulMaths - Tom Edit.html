@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Maths Problems</title>
+    <style>
+        #mathsection {
+            display: none;
+        }
+
+        #endsection {
+            display: none;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1 id="header">Speed Math Practice</h1>
+    <section id="readysection">
+        You will have 30 seconds to answer as many maths questions as possible. Hit enter to submit your answers. If you
+        make two errors, it ends.
+        <h3>Ready?</h3>
+        <button id="gobutton">Go</button>
+    </section>
+
+    <section id="mathsection">
+        <h2 id="timer"></h2>
+        <h3 id="mathproblem"></h3>
+        <input id="answerfield" onkeydown="checkenter()">
+        <h3 id="scoredisplay">score: 0</h3>
+    </section>
+
+    <section id="endsection">
+        <h3 id="congratulations"></h3>
+        <button id="backbutton">Back</button>
+    </section>
+
+
+
+    <script>
+        const timer = document.getElementById("timer")
+        var time = 30
+
+
+        function mathquestion() {
+            // randomly choose operator (+, -, * or /)
+            opChoice = Math.floor(Math.random() * 4)
+            ops = ["+", "-", "*", "/"]
+            opsPretty = ["+", "-", "x", "÷"]
+            op = ops[opChoice]
+            opPretty = opsPretty[opChoice]
+
+            if (op === "*") {
+                num1 = Math.round((Math.random() * 100) / 6)
+                num2 = Math.round((Math.random() * 100) / 6)
+            }
+            else if (op === "/") {
+                do {
+                    num1 = Math.round(Math.random() * 100)
+                    num2 = Math.round((Math.random() * 100) / 6)
+                }
+                //make sure the answer is a positive whole number so it's not too hard
+                while (num1 / num2 < 0 || num1 % num2 != 0);
+            } else {
+                num1 = Math.round(Math.random() * 100)
+                num2 = Math.round(Math.random() * 100)
+            }
+            document.getElementById("mathproblem").innerText = num1 + opPretty + num2
+            correctanswer = eval(`${num1} ${op} ${num2}`)
+        }
+
+        //start the maths problems
+        document.getElementById("gobutton").addEventListener("click", function () {
+            score = 0
+            mistakes = 0
+            document.getElementById("scoredisplay").innerText = "score: " + score
+            document.getElementById("readysection").style.display = 'none'
+            mathsection.style.display = "block"
+            //countdown resets
+            timer.innerText = "30"
+            mathquestion()
+            document.getElementById("answerfield").focus();
+            //time limit counts down
+            countdownfunc = setInterval(function () {
+                timer.innerText--
+                if (timer.innerText < 0) {
+                    gameover()
+                }
+            }, 1000)
+        })
+
+        //check if answer is correct
+        function checkenter() {
+            answer = document.getElementById("answerfield").value
+            if (event.keyCode == 13) {
+                if (answer == correctanswer) {
+                    score++
+                    mathquestion()
+                    document.getElementById("answerfield").value = "";
+                    document.getElementById("scoredisplay").innerText = "score: " + score
+                }
+                else {
+                    mistakes++
+                    score--
+                    document.getElementById("scoredisplay").innerText = "score: " + score
+                    document.getElementById("answerfield").value = ""
+                    if (mistakes == 2) {
+                        gameover()
+                    }
+                }
+            }
+        }
+
+        function gameover() {
+            clearInterval(countdownfunc)
+            mathsection.style.display = "none"
+            document.getElementById("endsection").style.display = 'block'
+            document.getElementById("congratulations").innerText = "Congratulations! Your score was " + score
+            document.getElementById("backbutton").addEventListener("click", function () {
+                document.getElementById("readysection").style.display = 'block'
+                document.getElementById("endsection").style.display = 'none'
+            })
+        }
+
+    </script>
+</body>
+
+</html>
