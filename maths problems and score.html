@@ -28,7 +28,7 @@
   </section>
 
   <section id="mathsection">
-    <h2 id="timer"></h2>
+    <h2 id="timer">99999</h2>
     <h3 id="mathproblem">asdasdasd</h3>
     <input id="answerfield" onkeydown="checkenter()">
     <h3 id="scoredisplay">score: 0</h3>
@@ -37,8 +37,9 @@
   <section id="endsection">
     <h3 id="congratulations"></h3>
     <button id="backbutton">Back</button>
-
   </section>
+
+
 
   <script>
     const timer = document.getElementById("timer")
@@ -46,10 +47,13 @@
     //time limit counts down
     var countdownfunc = setInterval(function () {
       timer.innerText--
+      if (timer.innerText < 0) {
+        gameover()
+      }
     }, 1000)
 
     function mathquestion() {
-      // randomly choose operator
+      // randomly choose operator (+, -, * or /)
       opselect = Math.random()
       if (opselect < 0.25) {
         //make addition problem
@@ -82,7 +86,7 @@
           num1 = Math.round(Math.random() * 100)
           num2 = Math.round((Math.random() * 100) / 6)
         }
-        //make sure the result is a positive whole number
+        //make sure the answer is a positive whole number so it's not too hard
         while (num1 / num2 < 0 || num1 % num2 != 0);
         document.getElementById("mathproblem").innerText = num1 + "÷" + num2
         correctanswer = num1 / num2
@@ -93,9 +97,10 @@
     document.getElementById("gobutton").addEventListener("click", function () {
       score = 0
       mistakes = 0
-      document.getElementById("scoredisplay").innerText = score
+      document.getElementById("scoredisplay").innerText = "score: "+score
       document.getElementById("readysection").style.display = 'none'
       mathsection.style.display = "block"
+      //countdown resets
       timer.innerText = "30"
       mathquestion()
       document.getElementById("answerfield").focus();
